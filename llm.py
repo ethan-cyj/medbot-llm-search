@@ -36,11 +36,13 @@ class MedBot:
         self.visit_id = visit_id
         self.instruction = "Instruction: You are MedBot, a medical doctor and pharmacist and assistant chatbot at Tan Tock Seng Hospital, offering clear and comprehensive explanations on prescriptions and medical procedures. Your goal is to provide simplified answers to inquiries, catering to individuals with poor medical literacy. Answer may take reference to the provided context.\n"
 
-    def build_prompt(self, user_query, prescription_info, visit_info, to_retrieve, handle_search):
+    def build_prompt(self, user_query, prescription_info, visit_info, to_retrieve, handle_search, history):
         # Example of fetching data from a database
         # prescription_info = formatted_prescriptions(self.visit_id)
         # visit_info = formatted_visits(self.patient_id)
-        return f"{self.instruction}\n\nInput: {user_query}\n\nPrescriptions: {prescription_info}\n\nVisits: {visit_info}\n\n{self.retrieve_information(to_retrieve, handle_search)}\nOutput:"
+        if not history:
+            history = ""
+        return f"{self.instruction}\n\n{history}Input: {user_query}\n\nPrescriptions: {prescription_info}\n\nVisits: {visit_info}\n\n{self.retrieve_information(to_retrieve, handle_search)}\nOutput:"
 
     def retrieve_information(self, input_text_list, handle_search):
         results = []
@@ -49,13 +51,23 @@ class MedBot:
             rag_info = handle_search(input_text, n, 8)
             results.append(rag_info[0])
         return "Retrieved information from hospital database: \n" + str(results)
+    def format_history(self, history):
+        output = "Last Query History:\n"
+        for entry in history:
+            output += "\n- User: {}\n- Response: {}\n".format(entry["user_question"], entry["response"])
+            output += "- Sources: {}\n".format(", ".join(entry["sources"]))
+        return output + "\n\n"
     
-    def generate_response(self, user_query, prescription_info, visit_info, handle_search, intent):
+    def generate_response(self, user_query, prescription_info, visit_info, handle_search, intent, history = None):
         if intent == "medicine":
             to_retrieve = prescription_info
         elif intent == "disease":
             to_retrieve = visit_info
-        input_text = self.build_prompt(user_query,  prescription_info, visit_info, to_retrieve, handle_search)
+        else:
+            to_retrieve = user_query
+        if history:
+            history = self.format_history(history)
+        input_text = self.build_prompt(user_query,  prescription_info, visit_info, to_retrieve, handle_search, history)
         print(input_text)
         response = self.model.generate(prompt=input_text, guardrails=False)
         bot_response = response["results"][0]["generated_text"]
