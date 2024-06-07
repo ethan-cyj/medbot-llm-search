@@ -1,0 +1,4 @@
+elasticsearch==8.13.2
+Flask==3.0.3
+ibm_watsonx_ai==1.0.4
+python-dotenv==1.0.1

@@ -1,0 +1,83 @@
+openapi: 3.0.0
+info:
+  title: medbot-llm-search
+  version: 1.0.0
+  description: API for MedBot generation extension
+
+servers:
+  - url: https://medbot-llm-search.1gpmytaegikv.us-south.codeengine.appdomain.cloud
+    description: IBM Cloud Code Engine
+paths:
+  /generate_response:
+    post:
+      summary: Generate MedBot response
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_question:
+                  type: string
+                  example: "What does my medication for this visit do?"
+                prescription_info:
+                  type: array
+                  items:
+                    type: string
+                  example: ["Methotrexate", "Ibuprofen", "Folic Acid"]
+                visit_info:
+                  type: array
+                  items:
+                    type: string
+                  example: ["Arthritis"]
+                patient_id:
+                  type: string
+                  example: "S1234567A"
+                visit_id:
+                  type: integer
+                  example: 1
+                intent:
+                  type: string
+                  enum: [medicine, disease, general]
+                history: 
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      user_question:
+                        type: string
+                      response:
+                        type: string
+                      sources:
+                        type: array
+                        items:
+                          type: string
+                  example: [{"user_question": "What does my medication for this visit do?", "response": "Methotrexate is a medication used to treat arthritis. It works by suppressing the immune system and reducing inflammation.", "sources": ["https://www.webmd.com/drugs/2/drug-10451/methotrexate-oral/details", "https://www.drugs.com/mtm/methotrexate.html"]}]
+              required:
+                - user_question
+                - prescription_info
+                - visit_info
+                - patient_id
+                - visit_id
+                - intent
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+                    example: "Methotrexate is a medication used to treat arthritis. It works by suppressing the immune system and reducing inflammation."
+                  sources:
+                    type: array
+                    items:
+                      type: string
+                    example: ["https://www.webmd.com/drugs/2/drug-10451/methotrexate-oral/details", "https://www.drugs.com/mtm/methotrexate.html"]
+        '400':
+          description: Invalid request
+        '500':
+          description: Internal server error
