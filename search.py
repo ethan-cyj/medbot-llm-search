@@ -49,7 +49,7 @@ class Search:
         es = self.es_client
         filters, parsed_query = self.extract_filters(query)
         results = es.search(
-            index = 'my_documents',
+            index = 'my_documents1',
             query={
                 'bool': {
                     'must': [
@@ -83,8 +83,7 @@ class Search:
             min_score = min_score
         )
         results = results['hits']['hits']
-        return [[hit['_source']['text'], hit['_score']] for hit in results]
-
+        return [[hit['_source']['page_content'], hit['_source']['metadata']['source'], hit['_score']] for hit in results]
 
         
 # parsed_query = "how do i book an appointment?"

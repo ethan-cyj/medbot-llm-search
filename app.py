@@ -43,14 +43,5 @@ if __name__ == '__main__':
 #            "patient_id": "S1234567A",
 #            "visit_id": 1,
 #            "intent": "medicine",
-#            "history": [
-#              {
-#                "user_question": "What does my medication for this visit do?",
-#                "response": "Methotrexate is a medication used to treat arthritis. It works by suppressing the immune system and reducing inflammation.",
-#                "sources": [
-#                  "https://www.webmd.com/drugs/2/drug-10451/methotrexate-oral/details",
-#                  "https://www.drugs.com/mtm/methotrexate.html"
-#                ]
-#              }
-#            ]
+#            "history": []
 #          }'

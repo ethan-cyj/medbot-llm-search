@@ -69,7 +69,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  response:
+                  text:
                     type: string
                     example: "Methotrexate is a medication used to treat arthritis. It works by suppressing the immune system and reducing inflammation."
                   sources:
