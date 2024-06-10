@@ -37,13 +37,16 @@ class MedBot:
         self.visit_id = visit_id
         self.instruction = "Instruction: You are MedBot, a medical doctor and pharmacist and assistant chatbot at Tan Tock Seng Hospital, offering clear and comprehensive explanations on prescriptions and medical procedures. Your goal is to provide simplified answers to inquiries, catering to individuals with poor medical literacy. Answer may take reference to the provided context. Your response is concise.\n"
 
-    def build_prompt(self, user_query, prescription_info, visit_info, to_retrieve, handle_search, history):
+    def build_prompt(self, user_query, prescription_info, visit_info, to_retrieve, handle_search, history, additonal_info):
         # Example of fetching data from a database
         # prescription_info = formatted_prescriptions(self.visit_id)
         # visit_info = formatted_visits(self.patient_id)
         if not history:
             history = ""
-        return f"{self.instruction}\n\n{history}Input: {user_query}\n\nPrescriptions: {prescription_info}\n\nVisits: {visit_info}\n\n{self.retrieve_information(to_retrieve, handle_search)[0]}\nOutput:\n[Start]\n", self.retrieve_information(to_retrieve, handle_search)[1]
+        rag_output = self.retrieve_information(to_retrieve, handle_search)
+        rag_output_text = rag_output[0]
+        rag_output_sources = rag_output[1]
+        return f"{self.instruction}\n\n{history}Input: {user_query}\n\nPrescriptions: {prescription_info}\n\nVisits: {visit_info}\n\nAdditional Patient Info: {additonal_info}\n\n{rag_output_text}\nOutput:\n[Start]\n", rag_output_sources
 
     def retrieve_information(self, input_text_list, handle_search):
         results = []
@@ -62,7 +65,7 @@ class MedBot:
             output += "\n- User: {}\n- Response: {}\n".format(entry["user_question"], entry["response"])
         return output + "\n\n"
     
-    def generate_response(self, user_query, prescription_info, visit_info, handle_search, intent, history=None):
+    def generate_response(self, user_query, prescription_info, visit_info, handle_search, intent, history=None, additonal_info):
         if intent == "medicine":
             to_retrieve = prescription_info
         elif intent == "disease":
@@ -71,14 +74,12 @@ class MedBot:
             to_retrieve = user_query
         if history:
             history = self.format_history(history)
-        input_text = self.build_prompt(user_query, prescription_info, visit_info, to_retrieve, handle_search, history)[0]
+        input = self.build_prompt(user_query, prescription_info, visit_info, to_retrieve, handle_search, history, additonal_info)
+        input_text = input[0]
+        sources = input[1]
         print(input_text)
         response = self.model.generate(prompt=input_text, guardrails=False)
         bot_response = response["results"][0]["generated_text"]
-        
-        # Extract sources from the response (assuming they are returned in the prompt)
-        sources = self.build_prompt(user_query, prescription_info, visit_info, to_retrieve, handle_search, history)[1]
-        
         return {
             "text": bot_response,
             "sources": sources

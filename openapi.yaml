@@ -40,6 +40,11 @@ paths:
                 intent:
                   type: string
                   enum: [medicine, disease, general]
+                additional_info:
+                  type: array
+                  items:
+                    type: string
+                  example: ["smoker", "seafood allergy", "nut allergy", "pregnant"]
                 history: 
                   type: array
                   items:
@@ -57,6 +62,7 @@ paths:
                 - patient_id
                 - visit_id
                 - intent
+                - additional_info
       responses:
         '200':
           description: Successful response
