@@ -19,8 +19,9 @@ credentials = Credentials(
 model_id = "ibm/granite-13b-chat-v2"
 parameters = {
     "decoding_method": "greedy",
-    "max_new_tokens": 1000,
-    "repetition_penalty": 1
+    "max_new_tokens": 600,
+    "repetition_penalty": 1,
+    "stop_sequence": ["[End]"]
 }
 
 class MedBot:
@@ -34,7 +35,7 @@ class MedBot:
         )
         self.patient_id = patient_id
         self.visit_id = visit_id
-        self.instruction = "Instruction: You are MedBot, a medical doctor and pharmacist and assistant chatbot at Tan Tock Seng Hospital, offering clear and comprehensive explanations on prescriptions and medical procedures. Your goal is to provide simplified answers to inquiries, catering to individuals with poor medical literacy. Answer may take reference to the provided context.\n"
+        self.instruction = "Instruction: You are MedBot, a medical doctor and pharmacist and assistant chatbot at Tan Tock Seng Hospital, offering clear and comprehensive explanations on prescriptions and medical procedures. Your goal is to provide simplified answers to inquiries, catering to individuals with poor medical literacy. Answer may take reference to the provided context. Your response is concise.\n"
 
     def build_prompt(self, user_query, prescription_info, visit_info, to_retrieve, handle_search, history):
         # Example of fetching data from a database
@@ -42,7 +43,7 @@ class MedBot:
         # visit_info = formatted_visits(self.patient_id)
         if not history:
             history = ""
-        return f"{self.instruction}\n\n{history}Input: {user_query}\n\nPrescriptions: {prescription_info}\n\nVisits: {visit_info}\n\n{self.retrieve_information(to_retrieve, handle_search)[0]}\nOutput:", self.retrieve_information(to_retrieve, handle_search)[1]
+        return f"{self.instruction}\n\n{history}Input: {user_query}\n\nPrescriptions: {prescription_info}\n\nVisits: {visit_info}\n\n{self.retrieve_information(to_retrieve, handle_search)[0]}\nOutput:\n[Start]\n", self.retrieve_information(to_retrieve, handle_search)[1]
 
     def retrieve_information(self, input_text_list, handle_search):
         results = []
@@ -59,7 +60,6 @@ class MedBot:
         output = "Last Query History:\n"
         for entry in history:
             output += "\n- User: {}\n- Response: {}\n".format(entry["user_question"], entry["response"])
-            output += "- Sources: {}\n".format(", ".join(entry["sources"]))
         return output + "\n\n"
     
     def generate_response(self, user_query, prescription_info, visit_info, handle_search, intent, history=None):

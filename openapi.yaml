@@ -49,11 +49,7 @@ paths:
                         type: string
                       response:
                         type: string
-                      sources:
-                        type: array
-                        items:
-                          type: string
-                  example: [{"user_question": "What does my medication for this visit do?", "response": "Methotrexate is a medication used to treat arthritis. It works by suppressing the immune system and reducing inflammation.", "sources": ["https://www.webmd.com/drugs/2/drug-10451/methotrexate-oral/details", "https://www.drugs.com/mtm/methotrexate.html"]}]
+                  example: [{"user_question": "What does my medication for this visit do?", "response": "Methotrexate is a medication used to treat arthritis. It works by suppressing the immune system and reducing inflammation."}]
               required:
                 - user_question
                 - prescription_info
@@ -69,14 +65,17 @@ paths:
               schema:
                 type: object
                 properties:
-                  text:
-                    type: string
-                    example: "Methotrexate is a medication used to treat arthritis. It works by suppressing the immune system and reducing inflammation."
-                  sources:
-                    type: array
-                    items:
-                      type: string
-                    example: ["https://www.webmd.com/drugs/2/drug-10451/methotrexate-oral/details", "https://www.drugs.com/mtm/methotrexate.html"]
+                  response:
+                    type: object
+                    properties:
+                      text:
+                        type: string
+                        example: "\n\nBased on the information provided, it seems that you have been diagnosed with Rheumatoid Arthritis (RA). Here are some next steps for you:\n\n1. Continue taking your prescribed medications, including Methotrexate, Ibuprofen, and Folic Acid. These medications aim to control your RA symptoms and prevent joint damage.\n2. Schedule regular check-ups with your rheumatologist to monitor your condition and adjust your treatment plan as needed.\n3. Engage in physical therapy and occupational therapy to improve your mobility, strength, and overall function.\n4. Explore non-pharmacological methods to manage your pain, such as heat and cold therapy, and consider using assistive devices like splints.\n5. If your symptoms are not controlled by standard therapy, your rheumatologist may recommend biologic agents, which are expensive and reserved for severe cases.\n6. Make lifestyle modifications to improve your overall health, such as quitting smoking, getting adequate rest, exercising regularly, and maintaining a healthy body weight.\n\nRemember, it's essential to follow your healthcare provider's advice and recommendations to manage your RA effectively. If you have any questions or concerns, don't hesitate to discuss them with your rheumatologist.\n\nPlease note that this information is based on the provided context and may not cover all possible aspects of your condition or treatment. Always consult with a healthcare professional for personalized advice.\n\n[Note: The improved response provides a more detailed and personalized explanation of the next steps for managing Rheumatoid Arthritis, taking into account the prescribed medications, regular check-ups, physical therapy, non-pharmacological methods, biologic agents, and lifestyle modifications.]"
+                      sources:
+                        type: array
+                        items:
+                          type: string
+                        example: ["https://www.ttsh.com.sg/Patients-and-Visitors/Pages/Find-Conditions-and-Treatments-Details.aspx?condition=Rheumatoid-Arthritis", "https://www.ttsh.com.sg/Patients-and-Visitors/Medical-Services/Pharmacy/Documents/Pharmacy/PIL/PIL_by_Drug/Methotrexate_RAI_.pdf"]
         '400':
           description: Invalid request
         '500':
