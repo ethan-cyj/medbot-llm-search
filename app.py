@@ -19,12 +19,12 @@ def generate_response():
     visit_id = data.get('visit_id')
     intent = data.get('intent')
     history = data.get('history')
-    additonal_info = data.get('additional_info')
+    additional_info = data.get('additional_info')
 
     es = Search()
     med_bot = MedBot(patient_id, visit_id)
     handle_search = es.handle_search
-    response = med_bot.generate_response(user_question, prescription_info, visit_info, handle_search, intent, history, additonal_info)
+    response = med_bot.generate_response(user_question, prescription_info, visit_info, handle_search, intent, history, additional_info)
     
     return jsonify({"response": response})
 
@@ -60,4 +60,4 @@ if __name__ == '__main__':
 #            "intent": "disease",
 #            "additional_info": ["smoker", "seafood allergy", "nut allergy", "pregnant"],
 #            "history": [{"user_question": "What does my medication for this visit do?", "response": "Methotrexate is a medication used to treat arthritis. It works by suppressing the immune system and reducing inflammation."}]
-#          }
+#          }'
