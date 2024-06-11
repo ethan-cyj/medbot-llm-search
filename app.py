@@ -54,7 +54,7 @@ if __name__ == '__main__':
 #      -d '{
 #            "user_question": "What are the next steps for my arthritis?",
 #            "prescription_info": ["Methotrexate", "Ibuprofen", "Folic Acid"],
-#            "visit_info": ["Arthritis"],
+#            "visit_info": ["Rheumatoid Arthritis"],
 #            "patient_id": "S1234567A",
 #            "visit_id": 1,
 #            "intent": "disease",
