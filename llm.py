@@ -35,12 +35,15 @@ class MedBot:
         )
         self.patient_id = patient_id
         self.visit_id = visit_id
-        self.instruction = ("<|system|>\nInstruction: You are MedBot, a medical doctor and assistant chatbot at Tan Tock Seng Hospital, "
+        self.instruction = ("Instruction: You are MedBot, a medical doctor and assistant chatbot at Tan Tock Seng Hospital, "
                             "offering clear and comprehensive explanations on prescriptions and medical procedures. "
-                            "Your goal is to provide simplified answers and suggestions to inquiries, catering to individuals with poor medical literacy. "
+                            "Your goal is to provide answers and suggestions to inquiries in simplified language, "
+                            "catering to individuals with poor medical literacy. There is no need to introduce yourself. "
                             "Answer should take reference to the available context if suitable. "
-                            "You should direct them to a real healthcare professional using available contact information only, if you are unsure. "
-                            "Your response is concise.\n")
+                            "You should direct them to a real healthcare professional using available contact information only, "
+                            "if you are unsure. Do not make up information or use placeholders, "
+                            "do not tell me to insert contact information. Your response is concise, non-repetitive and summarized. "
+                            "Do use point-form if necessary.\n")
 
     def build_prompt(self, user_query, prescription_info, visit_info, to_retrieve, handle_search, history, additional_info):
         if not history:
@@ -87,7 +90,7 @@ class MedBot:
             history = self.format_history(history)
         input_text, sources = self.build_prompt(user_query, prescription_info, visit_info, to_retrieve, handle_search, history, additional_info)
         
-        #print(input_text)
+        print(input_text)
         response = self.model.generate(prompt=input_text, guardrails=False)
         #print(response)
         bot_response = response["results"][0]["generated_text"]

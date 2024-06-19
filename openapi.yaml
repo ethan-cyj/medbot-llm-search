@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: medbot-llm-search
-  version: 1.0.0
+  version: 1.0.12
   description: API for MedBot generation extension
 
 servers:
