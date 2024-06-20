@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from search import Search
 from llm import MedBot
+from cloudant import CloudantClient
 from dotenv import load_dotenv
 import os
 
@@ -28,6 +29,20 @@ def generate_response():
     
     return jsonify({"response": response})
 
+@app.route('/get_patient', methods=['POST'])
+def get_patient():
+    data = request.get_json()
+    patient_id = data.get('patient_id')
+    visit_id = data.get('visit_id')
+
+    cloudant_client = CloudantClient()
+    patient_info = cloudant_client.query_patient_info(patient_id, visit_id)
+
+    if "error" in patient_info:
+        return jsonify({"error": patient_info["error"]}), 404
+
+    return jsonify(patient_info)
+
 if __name__ == '__main__':
     print("Starting server...")
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
@@ -49,15 +64,9 @@ if __name__ == '__main__':
 #          }'
 
 
-# curl -X POST http://localhost:8080/generate_response \
+# curl -X POST http://localhost:8080/get_patient \
 #      -H "Content-Type: application/json" \
 #      -d '{
-#            "user_question": "What are the next steps for my arthritis?",
-#            "prescription_info": ["Methotrexate", "Ibuprofen", "Folic Acid"],
-#            "visit_info": ["Rheumatoid Arthritis"],
-#            "patient_id": "S1234567A",
+#            "patient_id": 1,
 #            "visit_id": 1,
-#            "intent": "disease",
-#            "additional_info": ["smoker", "seafood allergy", "nut allergy", "pregnant"],
-#            "history": [{"user_question": "What does my medication for this visit do?", "response": "Methotrexate is a medication used to treat arthritis. It works by suppressing the immune system and reducing inflammation."}]
 #          }'

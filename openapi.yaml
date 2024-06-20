@@ -86,3 +86,54 @@ paths:
           description: Invalid request
         '500':
           description: Internal server error
+  /get_patient:
+    post:
+      summary: Retrieve patient information
+      description: Retrieve patient information from IBM Cloudant based on visit_id and patient_id.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                patient_id:
+                  type: integer
+                visit_id:
+                  type: integer
+      responses:
+        '200':
+          description: Successfully retrieved patient information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  visit_id:
+                    type: integer
+                  prescription_info:
+                    type: array
+                    items:
+                      type: string
+                  visit_info:
+                    type: array
+                    items:
+                      type: string
+                  patient_id:
+                    type: integer
+                  NRIC:
+                    type: string
+                  first_name:
+                    type: string
+                  last_name:
+                    type: string
+                  email:
+                    type: string
+                  additional_info:
+                    type: array
+                    items:
+                      type: string
+        '400':
+          description: Invalid request
+        '500':
+          description: Internal server error
